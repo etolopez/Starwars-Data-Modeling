@@ -8,23 +8,63 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+
+class Planets(Base):
+    __tablename__ = 'planets'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250))
+    diameter = Column(Integer)
+    population = Column(Integer)
+
+    def to_dict(self):
+        return {}
+
+class FavoritePlanets(Base):
+    __tablename__ = 'favorite_planets'
+    id = Column(Integer, primary_key=True)
+    planet_id = Column(Integer, ForeignKey('planets.id'), unique=True)
+    planet = relationship(Planets, primaryjoin=planet_id == Planets.id)
+    
+    def to_dict(self):
+        return {}
+
+class Vehicles(Base):
+    __tablename__ = 'vehicles'
+    id = Column(Integer, primary_key=True)
+    model = Column(String(250))
+    length = Column(Integer)
+
+    def to_dict(self):
+        return {}
+
+class FavoriteVehicles(Base):
+    __tablename__ = 'favorite_vehicles'
+    id = Column(Integer, primary_key=True)
+    vehicle_id = Column(Integer, ForeignKey('vehicles.id'), unique=True)
+    vehicle = relationship(Vehicles, primaryjoin=vehicle_id == Vehicles.id)
+
+    def to_dict(self):
+        return {}
+
+class Character(Base):
+    __tablename__ = 'character'
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
+    height = Column(Integer)
+    mass = Column(Integer)
+    planet_id = Column(Integer, ForeignKey('planets.id'))
+    homeworld = relationship(Planets, primaryjoin=planet_id == Planets.id)
+    vehicle_id = Column(Integer, ForeignKey('vehicles.id'))
+    vehicle = relationship(Vehicles, primaryjoin=vehicle_id == Vehicles.id)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+    def to_dict(self):
+        return {}
+
+class FavoriteCharacter(Base):
+    __tablename__ = 'favorite_characters'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    character_id = Column(Integer, ForeignKey('character.id'), unique=True)
+    character = relationship(Character, primaryjoin=character_id == Character.id)
 
     def to_dict(self):
         return {}
